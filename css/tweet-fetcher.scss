@@ -1,0 +1,177 @@
+$TwttrLeftIndent: 58px;
+
+// SCSS placeholder technique so class won't appear if unused.
+// http://blog.teamtreehouse.com/a-better-clearfix-with-sass
+%clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+// This root should match the baseClassName string supplied in the configuration object.
+// If you don't supply an explicit baseClassName it will default to the container ID.
+// Requires compilation with SCSS 3.3 or later.
+// For reference on the why and how of BEM patterns see:
+// http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
+// http://www.alwaystwisted.com/articles/2014-02-27-even-easier-bem-ing-with-sass-33
+
+.//put your baseClassName here {
+	
+	&__tweet-list {
+		font-family: sans-serif;
+		list-style: none;
+		margin: 0 auto;
+		padding: 0;
+		position: relative;
+		@extend %clearfix;
+	}
+
+	&__tweet {
+		background: #fff;
+		border: 1px solid #bbb;
+		border-radius: 3px;
+		float: left;
+		margin-bottom: 10px;
+		max-width: 500px;
+		padding: 10px 8px 14px 20px;
+		position: relative;
+		text-decoration: none;
+	}
+
+	&__user {
+		padding: 0 0 1px 0;
+		position: relative;
+		border-radius: 6px 6px 0px 0px;
+
+		a {
+			color: #000;
+			margin: 0;
+			text-decoration: none;
+		}
+		
+		img {
+			border: 1px solid #bbb;
+			border-radius: 3px;
+			float: left;
+			height: 48px;
+			margin: 0 10px 10px 0;
+			padding: 6px;
+			width: 48px;
+		}
+
+		[data-scribe="element:name"],
+		[data-scribe="element:screen_name"] {
+			display: inline-block;
+			margin-top: 0px;
+		}
+
+		[data-scribe="element:name"] {
+			font-size: 14px;
+			font-weight: bold;
+			margin-right: .2em;
+		}
+		
+		[data-scribe="element:screen_name"] {
+			color: #8899a6;
+			font-size: 13px;
+		}
+		
+	}
+
+	&__tweet-text {
+		font-size: 14px;
+		margin: 0;
+		padding: 3px 0 10px $TwttrLeftIndent;
+
+		a {
+			color: #e68600;
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+		}
+		
+		a[data-pre-embedded] {
+			// Truncate long URLs.
+			// https://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
+			display: inline-block;
+			max-width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			vertical-align: middle;
+		}
+	}
+
+	&__time-posted {
+		color: #ccd6dd;
+		font-size: .8em;
+		position: absolute;
+		bottom: 8px;
+		right: 12px;
+		
+	}
+
+	&__media {
+		clear: both;
+		padding-left: $TwttrLeftIndent;
+
+		&__image {
+			border-radius: 4px;
+			display: block;
+			height: auto;
+			max-width: 100%;
+		}
+	}
+
+	&__interact {
+		clear: both;
+		float: left;
+		margin: 0 0 0 -4px;
+		padding-left: $TwttrLeftIndent;
+		border-radius: 0px 0px 6px 6px;
+	}
+
+	&__reply,
+	&__retweet,
+	&__favorite {
+		display: inline-block;
+		line-height: 0;
+		margin: 5px 15px 0 0 ;
+		padding: 3px;
+	} 	
+	
+	&__reply-icon,
+	&__retweet-icon,
+	&__favorite-icon {
+		display: inline-block;
+		height: 24px;
+		width: 24px;
+	}
+
+	&__reply-icon {
+		background: url(img-lib/twitter-reply-icon.svg);
+	}
+
+	&__retweet-icon {
+		background: url(img-lib/twitter-retweet-icon.svg);
+	}
+
+	&__favorite-icon {
+		background: url(img-lib/twitter-favorite-icon.svg);
+	}
+	
+	&__screen-reader-text {
+		// https://developer.yahoo.com/blogs/ydn/clip-hidden-content-better-accessibility-53456.html
+  	clip: rect(1px, 1px, 1px, 1px);
+  	height: 1px; 
+  	overflow: hidden;
+  	padding: 0;
+  	pointer-events: none;
+  	position: absolute !important;
+  	width: 1px;
+  	word-wrap: normal;
+  }
+}
+
