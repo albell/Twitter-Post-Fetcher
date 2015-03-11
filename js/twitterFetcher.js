@@ -22,7 +22,8 @@
     factory();
   }
 }(this, function() {
-  var domNode = '';
+  var domId = '';
+  var baseClassName = '';
   var maxTweets = 20;
   var parseLinks = true;
   var queue = [];
@@ -42,10 +43,10 @@
     if (customCallbackFunction === null) {
       var x = tweets.length;
       var n = 0;
-      var element = document.getElementById(domNode);
-      var html = '<ul>';
+      var element = document.getElementById(domId);
+      var html = '<ul class="' + baseClassName + '__tweet-list">';
       while(n < x) {
-        html += '<li>' + tweets[n] + '</li>';
+        html += '<li class="' + baseClassName + '__tweet">' + tweets[n] + '</li>';
         n++;
       }
       html += '</ul>';
@@ -89,6 +90,9 @@
 
   var twitterFetcher = {
     fetch: function(config) {
+      if (config.baseClassName === undefined) {
+        config.baseClassName = config.domId;
+      }
       if (config.maxTweets === undefined) {
         config.maxTweets = 20;
       }
@@ -125,7 +129,8 @@
       } else {
         inProgress = true;
 
-        domNode = config.domId;
+        baseClassName = config.baseClassName;
+        domId = config.domId;
         maxTweets = config.maxTweets;
         parseLinks = config.enableLinks;
         printUser = config.showUser;
@@ -159,9 +164,10 @@
       var rts = [];
       var tids = [];
       var x = 0;
+      var tmp;
 
       if (supportsClassName) {
-        var tmp = div.getElementsByClassName('tweet');
+        tmp = div.getElementsByClassName('tweet');
         while (x < tmp.length) {
           if (tmp[x].getElementsByClassName('retweet-credit').length > 0) {
             rts.push(true);
@@ -182,7 +188,7 @@
           x++;
         }
       } else {
-        var tmp = getElementsByClassName(div, 'tweet');
+        tmp = getElementsByClassName(div, 'tweet');
         while (x < tmp.length) {
           tweets.push(getElementsByClassName(tmp[x], 'e-entry-title')[0]);
           tids.push(tmp[x].getAttribute('data-tweet-id'));
@@ -212,7 +218,7 @@
       }
 
       var arrayTweets = [];
-      var x = tweets.length;
+      x = tweets.length;
       var n = 0;
       while(n < x) {
         if (typeof(formatterFunction) !== 'string') {
@@ -246,46 +252,61 @@
             }
           }
           if (printUser) {
-            op += '<div class="user">' + strip(authors[n].innerHTML) +
+            op += '<div class="' + baseClassName + '__user">' + strip(authors[n].innerHTML) +
                 '</div>';
           }
-          op += '<p class="tweet">' + strip(tweets[n].innerHTML) + '</p>';
+          op += '<p class="' + baseClassName + '__tweet-text">' + strip(tweets[n].innerHTML) + '</p>';
           if (printTime) {
-            op += '<p class="timePosted">' +
-                times[n].getAttribute('aria-label') + '</p>';
+            op += '<p class="' + baseClassName + '__time-posted">' +
+                times[n].getAttribute('aria-label') + "</p>";
           }
         } else {
           if (tweets[n].innerText) {
             if (printUser) {
-              op += '<p class="user">' + authors[n].innerText + '</p>';
+              op += '<p class="' + baseClassName + '__user">' + authors[n].innerText + '</p>';
             }
-            op += '<p class="tweet">' +  tweets[n].innerText + '</p>';
+            op += '<p class="' + baseClassName + '__tweet-text">' +  tweets[n].innerText + '</p>';
             if (printTime) {
-              op += '<p class="timePosted">' + times[n].innerText + '</p>';
+              op += '<p class="' + baseClassName + '__time-posted">' + times[n].innerText + '</p>';
             }
 
           } else {
             if (printUser) {
-              op += '<p class="user">' + authors[n].textContent + '</p>';
+              op += '<p class="' + baseClassName + '__user">' + authors[n].textContent + '</p>';
             }
-            op += '<p class="tweet">' +  tweets[n].textContent + '</p>';
+            op += '<p class="' + baseClassName + '__tweet-text">' +  tweets[n].textContent + '</p>';
             if (printTime) {
-              op += '<p class="timePosted">' + times[n].textContent + '</p>';
+              op += '<p class="' + baseClassName + '__time-posted">' + times[n].textContent + '</p>';
             }
           }
         }
-        if (showInteractionLinks) {
-          op += '<p class="interact"><a href="https://twitter.com/intent/' +
-              'tweet?in_reply_to=' + tids[n] + '" class="twitter_reply_icon"' + (targetBlank ? ' target="_blank">' : '>') +
-              'Reply</a><a href="https://twitter.com/intent/retweet?tweet_id=' +
-              tids[n] + '" class="twitter_retweet_icon"' + (targetBlank ? ' target="_blank">' : '>') + 'Retweet</a>' +
-              '<a href="https://twitter.com/intent/favorite?tweet_id=' +
-              tids[n] + '" class="twitter_fav_icon"' + (targetBlank ? ' target="_blank">' : '>') + 'Favorite</a></p>';
-        }
 
         if (showImages && images[n] !== undefined) {
-          op += '<div class="media">' +
-              '<img src="' + extractImageUrl(images[n]) + '" alt="Image from tweet" />' +
+          op += '<div class="' + baseClassName + '__media">' +
+              '<img class="' + baseClassName + '__media__image" src="' +
+              extractImageUrl(images[n]) + '" alt="Image from tweet" />' +
+              '</div>';
+        }
+
+        if (showInteractionLinks) {
+          op += '<div class="' + baseClassName + '__interact">' +
+          		'<a class="'  + baseClassName + '__reply"' +
+          		'href="https://twitter.com/intent/tweet?in_reply_to=' + tids[n] +
+          		'"' + (targetBlank ? ' target="_blank">' : '>') +
+              '<span aria-hidden="true" class="' + baseClassName + '__reply-icon"></span>' +
+              '<span class="' + baseClassName + '__screen-reader-text">Reply</span></a>' +
+
+              '<a class="' + baseClassName + '__retweet" ' +
+              'href="https://twitter.com/intent/retweet?tweet_id=' + tids[n] +
+              '"' + (targetBlank ? ' target="_blank">' : '>') +
+              '<span aria-hidden="true" class="' + baseClassName + '__retweet-icon"></span>' +
+              '<span class="' + baseClassName + '__screen-reader-text">Retweet</span></a>' +
+
+              '<a class="' + baseClassName + '__favorite" ' +
+              'href="https://twitter.com/intent/favorite?tweet_id=' + tids[n] +
+              '"' + (targetBlank ? ' target="_blank">' : '>') +
+              '<span aria-hidden="true" class="' + baseClassName + '__favorite-icon"></span>' +
+              '<span class="' + baseClassName + '__screen-reader-text">Favorite</span></a>' +
               '</div>';
         }
 
